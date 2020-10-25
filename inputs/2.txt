@@ -1,6 +1,4 @@
-loop{
-    repeat 10:
-    {    print(100);
-    }
+repeat 10:
+{    print(100);
 }
 end

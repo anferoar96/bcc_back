@@ -41,6 +41,7 @@ class Visitor extends BccVisitor{
     visitStmt(ctx){
         
         if(ctx.PRINT()!=null){
+            //console.log("Aqui vamos")
             let aux=this.visit(ctx.lexpr())[0]
             console.log(aux)
         }else if(ctx.INPUT()!=null){
@@ -48,21 +49,36 @@ class Visitor extends BccVisitor{
         }else if(ctx.WHEN()!=null){
 
         }else if(ctx.IF()!=null){
-
+            let res=this.visit(ctx.lexpr())[0]
+            if(res){
+                this.visit(ctx.getChild(5))
+            }else{
+                this.visit(ctx.getChild(7))
+            }
         }else if(ctx.UNLESS()!=null){
 
         }else if(ctx.WHILE()!=null){
-
+            while (true){
+                let ex=this.visit(ctx.lexpr())[0]
+                if(ex){
+                    this.visit(ctx.stmtBlock())
+                }else{
+                    break
+                }
+            }  
         }else if(ctx.RETURN()!=null){
 
         }else if(ctx.UNTIL()!=null){
-
+            
         }else if(ctx.LOOP()!=null){
 
         }else if(ctx.DO()!=null){
 
         }else if(ctx.REPEAT()!=null){
-
+            let rep=Number(this.visit(ctx.NUM()))
+            for(let i=0;i<rep;i++){
+                this.visit(ctx.stmtBlock())
+            }
         }else if(ctx.FOR()!=null){
 
         }else if(ctx.NEXT()!=null){
@@ -120,6 +136,8 @@ class Visitor extends BccVisitor{
                 }
             }
             
+        }else if(ctx.TK_PAR_IZQ()!=null){
+            return this.visit(ctx.lexpr())[0]
         }
     }
 
@@ -141,6 +159,52 @@ class Visitor extends BccVisitor{
         return res[0]
     }
 
+    visitTerm(ctx){
+        let res=[]
+        for(let i=0;i<ctx.getChildCount();i++){
+            let p=this.visit(ctx.getChild(i))
+            if(res.length==2){
+                if(res[1]=='*'){
+                    res[0]=res[0]*p
+                }else if(res[1]=='/'){
+                    res[0]=res[0]/p
+                }else if(res[1]=='%'){
+                    res[0]=res[0]%p
+                }
+                res=res.slice(0,1)
+            }else{
+                res.push(p)
+            }
+        }
+        return res[0]
+    }
+
+    visitRexpr(ctx){
+        let res=[]
+        for(let i=0;i<ctx.getChildCount();i++){
+            let p=this.visit(ctx.getChild(i));
+            if(res.length==2){
+                if(res[1]=='<'){
+                    res[0]=(res[0]<p)
+                }else if(res[1]=='=='){
+                    res[0]=(res[0]==p)
+                }else if(res[1]=='<='){
+                    res[0]=(res[0]<=p)
+                }else if(res[1]=='>'){
+                    res[0]=(res[0]>p)
+                }else if(res[1]=='>='){
+                    res[0]=(res[0]>=p)
+                }else if(res[1]=='!='){
+                    res[0]=(res[0]!=p)
+                }
+                res=res.slice(0,1)
+            }else{
+                res.push(p)
+            }
+        } 
+        //console.log(res[0])
+        return res[0]
+    }
     
 }
 

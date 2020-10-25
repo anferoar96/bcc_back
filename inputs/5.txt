@@ -1,0 +1,6 @@
+var z:num;
+z:=10;
+for (z==10;z<20;z++)do{
+    print(z);
+}
+end

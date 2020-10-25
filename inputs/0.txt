@@ -1,5 +1,4 @@
 var z:num;
 z := 8;
-print 1+1;
-print z-4;
+print 1*1*2+2*z;
 end

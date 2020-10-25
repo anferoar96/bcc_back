@@ -1,0 +1,12 @@
+var x:num,y:num;
+x := 10;
+y := 20;
+if ((x < y) == false) do
+    {
+    print x;
+    }
+else
+{
+    print y;
+}
+end
