@@ -1,5 +1,4 @@
 grammar BCC; // Define a grammar called
-//Se cambio expr por lexpr
 
 prog: fndeclList* mainProg | EOF; // match keyword
 varDecl:
@@ -53,7 +52,7 @@ simpleExpr: term ((TK_MAS | TK_MENOS) term)*;
 term: factor ((TK_MUL | TK_DIV | TK_MOD) factor)*;
 factor:
 	NUM
-	| bool
+	| BOOL
 	| ID (TK_INCREMENTO | TK_DECREMENTO)
 	| (TK_INCREMENTO | TK_DECREMENTO) ID
 	| ID
@@ -61,7 +60,7 @@ factor:
 	| FID TK_PAR_IZQ (lexpr (TK_COMA lexpr)*)? TK_PAR_DER;
 mainProg: (VAR varDecl TK_PUNTOYCOMA)? stmt* END;
 
-bool: 'true' | 'false';
+BOOL: 'true' | 'false';
 DATATYPE: 'num' | 'bool';
 
 TK_DOSPUNTOS: ':';

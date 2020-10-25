@@ -1,4 +1,5 @@
 var z:num;
-z := 0;
-print z;
+z := 8;
+print 1+1;
+print z-4;
 end
