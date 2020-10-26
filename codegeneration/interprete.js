@@ -35,7 +35,7 @@ class Visitor extends BccVisitor{
             }
 
         }
-       // console.log(reglas)
+        
     }
 
     visitStmt(ctx){
@@ -69,30 +69,73 @@ class Visitor extends BccVisitor{
         }else if(ctx.RETURN()!=null){
 
         }else if(ctx.UNTIL()!=null){
+            while(true){
+                let ex=this.visit(ctx.lexpr())[0]
+                if(ex){
+                    break
+                }else{
+                    this.visit(ctx.stmtBlock())
+                }
+            }
             
         }else if(ctx.LOOP()!=null){
-
-        }else if(ctx.DO()!=null){
-
+            while(true){
+                this.visit(ctx.stmtBlock())
+            }
+        }else if(ctx.FOR()!=null){
+            let ini=this.visit(ctx.assignexpr());
+            let cond=this.visit(ctx.getChild(4));
+            while(cond){
+                this.visit(ctx.stmtBlock())
+                let aux=reglas.get(ini)
+                let aum=this.visit(ctx.getChild(6));
+                aux[1]=aum
+                reglas.set(ini,aux)
+                this.visit(ctx.getChild(6))
+                cond=this.visit(ctx.getChild(4))
+            }
         }else if(ctx.REPEAT()!=null){
             let rep=Number(this.visit(ctx.NUM()))
             for(let i=0;i<rep;i++){
                 this.visit(ctx.stmtBlock())
             }
-        }else if(ctx.FOR()!=null){
-
+        }else if(ctx.DO()!=null){
+            
+           
         }else if(ctx.NEXT()!=null){
 
         }else if(ctx.BREAK()!=null){
-
+            //this.visit(ctx.getChild())
         }else if(ctx.ID()!=null){
            let l='',op='',r='';
            this.fID(ctx,l,op,r);
         }
     }
 
+    visitAssignexpr(ctx){
+        let l='',op='',r='';
+        l=this.visit(ctx.ID())
+        op=this.visit(ctx.getChild(1))
+        r= this.visit(ctx.lexpr())
+        if(reglas.has(l)){
+            let decla=reglas.get(l);
+            if(decla[0]=='bool'){
+                if(r!=true && r!=false){
+                    console.log("Tipo incorrecto de variable")
+                }
+            }
+            decla[1]=r;
+            reglas.set(l,decla)
+        }else{
+            console.log("Variable aun no ha sido declarada")
+        }
+        return l;
+        //this.fID(ctx,l,op,r); 
+    }
+
     fID(ctx,l,op,r){
         if(ctx.getChildCount()==4){
+            
             l=this.visit(ctx.ID())
             op=this.visit(ctx.getChild(1))
             r=this.visit(ctx.lexpr())[0]  //Depronto modificar

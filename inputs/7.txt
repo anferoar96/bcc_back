@@ -1,0 +1,5 @@
+var x:num,z:num;
+x:=10;
+z:=x++;
+print(z);
+end

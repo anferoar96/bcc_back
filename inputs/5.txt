@@ -1,6 +1,9 @@
 var z:num;
-z:=10;
-for (z==10;z<20;z++)do{
-    print(z);
+z:=12;
+until(z<10) do{
+    repeat 2:{
+        print(4);
+    } 
+    z:=z-1;
 }
 end

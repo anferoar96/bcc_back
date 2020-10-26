@@ -21,7 +21,7 @@ stmt:
 	| DO stmtBlock WHILE TK_PAR_IZQ lexpr TK_PAR_DER
 	| DO stmtBlock UNTIL TK_PAR_IZQ lexpr TK_PAR_DER
 	| REPEAT NUM TK_DOSPUNTOS stmtBlock
-	| FOR TK_PAR_IZQ lexpr TK_PUNTOYCOMA lexpr TK_PUNTOYCOMA lexpr TK_PAR_DER DO stmtBlock
+	| FOR TK_PAR_IZQ assignexpr TK_PUNTOYCOMA lexpr TK_PUNTOYCOMA lexpr TK_PAR_DER DO stmtBlock
 	| NEXT TK_PUNTOYCOMA
 	| BREAK TK_PUNTOYCOMA
 	| ID TK_ASIGNACION lexpr TK_PUNTOYCOMA //lexp
@@ -35,6 +35,7 @@ stmt:
 	| TK_DECREMENTO ID TK_PUNTOYCOMA
 	| TK_INCREMENTO ID TK_PUNTOYCOMA;
 
+assignexpr: ID TK_ASIGNACION lexpr;
 lexpr: nexpr ((AND nexpr)* | (OR nexpr)*)?;
 nexpr: NOT TK_PAR_IZQ lexpr TK_PAR_DER | rexpr;
 rexpr:
