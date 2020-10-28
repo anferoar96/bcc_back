@@ -4,7 +4,7 @@ const BccParser = require('./lib/BCCParser');
 const Interprete = require('./codegeneration/Interprete');
 const fs=require('fs');
 
-const input=fs.readFileSync('./inputs/7.txt').toString();
+const input=fs.readFileSync('./inputs/12.txt').toString();
 const chars = new antl4.InputStream(input);
 const lexer=new BccLexer.BCCLexer(chars);
 lexer.strictMode=false;

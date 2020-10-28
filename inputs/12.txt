@@ -1,6 +1,12 @@
 
-function @hello:num(a:num,b:num) var b:num;{
-    return 120-10;
+function @hello:num(a:num,b:num){
+    print a;
+    if(a<b)do{
+        print(a);
+    }else{
+        print(b);
+    }
+    return a-b;
 }
-print @hello();
+print @hello(12,1);
 end

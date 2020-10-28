@@ -26,19 +26,32 @@ class Visitor extends BccVisitor{
         let fun=this.visit(ctx.FID());
         if(funciones.has(fun)){
            if(ctx.getChild(5).getText()!=')'){
-                //let v=this.visit(ctx.getChild(5).ID())
-                //console.log(v)
                 this.visit(ctx.getChild(5))
+                let ide=this.visit(ctx.getChild(5).ID())
+                let valores=funciones.get(fun)[2]
+                if(ide.length!=valores.length){
+                    console.log("Numero incorrecto de parametros")
+                }else{
+                    for(let i=0;i<ide.length;i++){
+                        let upda=reglas.get(ide[i])
+                        upda[1]=valores[i]
+                        reglas.set(ide[i],upda)
+                    }
+                    //console.log(reglas)
+                }
+                //console.log(v)
+                
            }
-           this.visit(ctx.varDecl())
+           //this.visit(ctx.varDecl())
            let re=this.visit(ctx.stmtBlock());
            let aux=funciones.get(fun);
            aux[1]=re;
            funciones.set(fun,aux);
            //console.log(reglas)
         }else{
+            //Visito el contexto
             let contexto=ctx; //[contexto,retorno,parametros]
-            funciones.set(fun,[contexto,null]);
+            funciones.set(fun,[contexto,null,null]);
         }
     }
 
@@ -266,9 +279,14 @@ class Visitor extends BccVisitor{
         }else if(ctx.FID()!=null){
             let fun=this.visit(ctx.FID())
             if(funciones.has(fun)){
+                let para=this.visit(ctx.lexpr())
                 let cont=funciones.get(fun)[0]
+                let parametros=funciones.get(fun)
+                parametros[2]=para
+                funciones.set(fun,parametros)
                 this.visit(cont)
                 let ret=funciones.get(fun)[1]
+               
                 return ret
             }else{
                 console.log("Funcion aun no ha sido declarada")
