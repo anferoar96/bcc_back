@@ -89,7 +89,7 @@ class Visitor extends BccVisitor{
             if(res==false){
                 this.visit(ctx.stmtBlock())
             }
-        }else if(ctx.WHILE()!=null){
+        }else if(ctx.getChild(0)=='while'){
             while (true){
                 let ex=this.visit(ctx.lexpr())[0]
                 if(ex){
@@ -100,7 +100,7 @@ class Visitor extends BccVisitor{
             }  
         }else if(ctx.RETURN()!=null){
 
-        }else if(ctx.UNTIL()!=null){
+        }else if(ctx.getChild(0)=='until'){
             while(true){
                 let ex=this.visit(ctx.lexpr())[0]
                 if(ex){
@@ -133,11 +133,19 @@ class Visitor extends BccVisitor{
             }
         }else if(ctx.DO()!=null){
             if(ctx.WHILE()!=null){
-                
+                let ans;
+                do {
+                    this.visit(ctx.stmtBlock())
+                    ans=this.visit(ctx.lexpr())[0]
+                } while (ans==true);   
             }else if(ctx.UNTIL()!=null){
-
+                let ans;
+                do{
+                    this.visit(ctx.stmtBlock())
+                    ans=this.visit(ctx.lexpr())[0]
+                }while(ans==false)
             }
-           
+                  
         }else if(ctx.NEXT()!=null){
 
         }else if(ctx.BREAK()!=null){

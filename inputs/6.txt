@@ -1,5 +1,6 @@
 var z:num;
-for (z:=20;z>=10;z--)do{
+for (z:=0;z<=2;z++)do{
+    print(12);
     print(z);
 }
 end

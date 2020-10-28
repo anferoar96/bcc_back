@@ -1,0 +1,7 @@
+var z:num;
+z:=10;
+do{
+print z;
+z:=z+1;
+}while(z<15)
+end
