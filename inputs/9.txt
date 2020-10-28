@@ -1,0 +1,4 @@
+var a:num;
+input a;
+print a;
+end

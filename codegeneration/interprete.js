@@ -1,4 +1,5 @@
 const BccVisitor = require('../lib/BCCVisitor').BCCVisitor;
+const reader = require('readline-sync');
 
 var reglas;
 
@@ -45,8 +46,36 @@ class Visitor extends BccVisitor{
             let aux=this.visit(ctx.lexpr())[0]
             console.log(aux)
         }else if(ctx.INPUT()!=null){
+            let vari=this.visit(ctx.ID())
+            if(reglas.has(vari)){
+                let valor = reader.question();
+                let tipo=reglas.get(vari)[0]
+                if(tipo=='num'){
+                    if(isNaN(valor)){
+                        console.log("El valor a ingresar debe ser de tipo numerico")
+                    }else{
+                        let change=reglas.get(vari)
+                        change[1]=Number(valor)
+                        reglas.set(vari,change)
+                    }
+                }else if(tipo=='bool'){
+                    if(valor=='true' || valor=='false'){
+                        let change=reglas.get(vari)
+                        change[1]=(valor=='true')
+                        reglas.set(vari,change)
+                    }else{
+                        console.log("El valor a ingresar debe ser booleano")
+                    }
+                }
+            }else{
+                console.log("Variable aun no ha sido declarada")
+            }
 
         }else if(ctx.WHEN()!=null){
+            let res=this.visit(ctx.lexpr())[0]
+            if(res==true){
+                this.visit(ctx.stmtBlock())
+            }
 
         }else if(ctx.IF()!=null){
             let res=this.visit(ctx.lexpr())[0]
@@ -56,7 +85,10 @@ class Visitor extends BccVisitor{
                 this.visit(ctx.getChild(7))
             }
         }else if(ctx.UNLESS()!=null){
-
+            let res=this.visit(ctx.lexpr())[0]
+            if(res==false){
+                this.visit(ctx.stmtBlock())
+            }
         }else if(ctx.WHILE()!=null){
             while (true){
                 let ex=this.visit(ctx.lexpr())[0]
@@ -100,7 +132,11 @@ class Visitor extends BccVisitor{
                 this.visit(ctx.stmtBlock())
             }
         }else if(ctx.DO()!=null){
-            
+            if(ctx.WHILE()!=null){
+                
+            }else if(ctx.UNTIL()!=null){
+
+            }
            
         }else if(ctx.NEXT()!=null){
 

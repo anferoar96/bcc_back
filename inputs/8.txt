@@ -1,0 +1,6 @@
+var x:num,y:num;
+x:=10;
+y:=15;
+when ((x < y) == true) do print(x);
+print(12);
+end
