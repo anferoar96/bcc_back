@@ -1,0 +1,6 @@
+
+function @hello:num(a:num,b:num) var b:num;{
+    return 120-10;
+}
+print @hello();
+end

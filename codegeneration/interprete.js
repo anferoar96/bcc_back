@@ -2,10 +2,12 @@ const BccVisitor = require('../lib/BCCVisitor').BCCVisitor;
 const reader = require('readline-sync');
 
 var reglas;
+var funciones;
 
 class Visitor extends BccVisitor{
     start(ctx){
         reglas=new Map();
+        funciones=new Map();
         this.visitProg(ctx);    
     }
     visitChildren(ctx){
@@ -17,9 +19,29 @@ class Visitor extends BccVisitor{
     }
 
     visitTerminal(ctx) {
-        
         return ctx.getText();
     }
+
+    visitFndeclList(ctx){
+        let fun=this.visit(ctx.FID());
+        if(funciones.has(fun)){
+           if(ctx.getChild(5).getText()!=')'){
+                //let v=this.visit(ctx.getChild(5).ID())
+                //console.log(v)
+                this.visit(ctx.getChild(5))
+           }
+           this.visit(ctx.varDecl())
+           let re=this.visit(ctx.stmtBlock());
+           let aux=funciones.get(fun);
+           aux[1]=re;
+           funciones.set(fun,aux);
+           //console.log(reglas)
+        }else{
+            let contexto=ctx; //[contexto,retorno,parametros]
+            funciones.set(fun,[contexto,null]);
+        }
+    }
+
     visitVarDecl(ctx){
         let p;
         //z:['num',null]
@@ -99,7 +121,8 @@ class Visitor extends BccVisitor{
                 }
             }  
         }else if(ctx.RETURN()!=null){
-
+            let ans=this.visit(ctx.lexpr())[0]
+            return ans
         }else if(ctx.getChild(0)=='until'){
             while(true){
                 let ex=this.visit(ctx.lexpr())[0]
@@ -156,6 +179,18 @@ class Visitor extends BccVisitor{
         }
     }
 
+    visitStmtBlock(ctx){
+        if(ctx.getChildCount()==1){
+            this.visit(ctx.stmt())
+        }else{
+            let m;
+            for(let i=1;i<ctx.getChildCount()-1;i++){
+                m= this.visit(ctx.getChild(i))
+            }
+            return m;
+        }  
+    }
+
     visitAssignexpr(ctx){
         let l='',op='',r='';
         l=this.visit(ctx.ID())
@@ -200,12 +235,16 @@ class Visitor extends BccVisitor{
     }
 
     visitFactor(ctx){
+       
         if(ctx.NUM()!=null){
+            
             return Number(ctx.getText())
         }else if(ctx.BOOL()!=null){
+            
             let isTrue=(ctx.getText()=='true')
             return isTrue
         }else if(ctx.ID()!=null){
+            
             let cid=ctx.ID().getText();
             let aux=''
             if(reglas.has(cid)){
@@ -221,10 +260,19 @@ class Visitor extends BccVisitor{
                 }else if(ctx.TK_DECREMENTO()!=null){
                     return Number(aux)-1
                 }
-            }
-            
-        }else if(ctx.TK_PAR_IZQ()!=null){
+            } 
+        }else if(ctx.getChild(0)=='('){
             return this.visit(ctx.lexpr())[0]
+        }else if(ctx.FID()!=null){
+            let fun=this.visit(ctx.FID())
+            if(funciones.has(fun)){
+                let cont=funciones.get(fun)[0]
+                this.visit(cont)
+                let ret=funciones.get(fun)[1]
+                return ret
+            }else{
+                console.log("Funcion aun no ha sido declarada")
+            }
         }
     }
 
